@@ -1,7 +1,7 @@
 <template>
   <div class="bg-cover bg-center">
     <h3 class="mb-8 text-2xl">Account</h3>
-    <div class="flex mb-8">
+    <div class="mb-8 flex">
       <div>Your account is connecting with wallet:</div>
       <div class="ml-1">
         {{ truncateCurrentAddress || '-' }}
