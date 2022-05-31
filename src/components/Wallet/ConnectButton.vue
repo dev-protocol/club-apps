@@ -7,10 +7,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { providers } from 'ethers'
 import { whenDefined } from '@devprotocol/util-ts'
 import { ReConnectWallet, GetModalProvider } from '../../fixtures/wallet'
+import { getConnection } from '@devprotocol/elements'
+import { connectionId } from '../../constants/connection'
 
 export default {
   name: 'ConnectButton',
@@ -22,20 +24,34 @@ export default {
     }
   },
   async mounted() {
-    const { currentAddress } = await ReConnectWallet(this.modalProvider)
+    const { currentAddress, provider } = await ReConnectWallet(
+      // @ts-ignore
+      this.modalProvider
+    )
     if (currentAddress) {
+      // @ts-ignore
       this.walletAddress = currentAddress
+    }
+    if (provider) {
+      // @ts-ignore
+      this.setSigner(provider)
     }
   },
   methods: {
+    setSigner(provider: providers.Web3Provider) {
+      getConnection(connectionId)?.signer.next(provider.getSigner())
+    },
     async connect() {
+      // @ts-ignore
       const connectedProvider = await this.modalProvider.connect()
-      const newProvider = whenDefined(
-        connectedProvider,
-        (p) => new providers.Web3Provider(p)
-      )
+      const newProvider = whenDefined(connectedProvider, (p) => {
+        const provider = new providers.Web3Provider(p)
+        this.setSigner(provider)
+        return provider
+      })
 
-      const currentAddress = await newProvider.getSigner().getAddress()
+      const currentAddress = await newProvider?.getSigner().getAddress()
+      // @ts-ignore
       this.walletAddress = currentAddress
     },
   },
