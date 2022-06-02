@@ -14,16 +14,16 @@ export function getStaticPaths() {
 const { id } = Astro.params
 ---
 
-<Layout metaTitle="D Club | Quest">
+<Layout metaTitle='D Club | Quest'>
   <div
-    class="lg:container relative mx-auto lg:pt-12 grid lg:gap-12 lg:grid-cols-[minmax(290px,_1fr)_4fr]"
+    class='lg:container relative mx-auto lg:pt-12 grid lg:gap-12 lg:grid-cols-[minmax(290px,_1fr)_4fr]'
   >
     <Sidebar client:load />
     <QuestDetail
       {id}
-      title="Become the first 30 supporters"
-      description="start description description"
-      badgeImageSrc="/assets/badge1.png"
+      title='Become the first 30 supporters'
+      description='start description description'
+      badgeImageSrc='/assets/badge1.png'
     />
   </div>
 </Layout>
