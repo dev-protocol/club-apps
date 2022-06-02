@@ -62,7 +62,7 @@ import {
 import { getConnection } from '@devprotocol/elements'
 import { whenDefinedAll } from '@devprotocol/util-ts'
 import { defineComponent } from '@vue/composition-api'
-import { BigNumber, constants, providers, utils } from 'ethers'
+import { BigNumber, BigNumberish, constants, providers, utils } from 'ethers'
 import { parse } from 'query-string'
 import { Subscription, zip } from 'rxjs'
 import { connectionId } from 'src/constants/connection'
@@ -70,9 +70,12 @@ import { CurrencyOption } from 'src/constants/currencyOption'
 
 type Data = {
   currency: CurrencyOption
+  parsedAmount: BigNumberish
   approveNeeded: boolean
   subscriptions: Subscription[]
   stakeSuccessful: boolean
+  provider?: providers.Provider
+  account?: string
 }
 
 export default defineComponent({
@@ -83,9 +86,12 @@ export default defineComponent({
   data() {
     return {
       currency: CurrencyOption.DEV,
+      parsedAmount: utils.parseUnits(this.amount.toString(), 18),
       approveNeeded: false,
       subscriptions: [],
       stakeSuccessful: false,
+      provider: undefined,
+      account: undefined,
     } as Data
   },
   mounted() {
@@ -96,20 +102,21 @@ export default defineComponent({
 
     if (this.currency === CurrencyOption.ETH) {
       this.approveNeeded = false
-    } else {
-      if (connection) {
-        const sub = zip(connection.provider, connection.account).subscribe(
-          async ([provider, account]) => {
-            await whenDefinedAll(
-              [provider, account, this.destination],
-              async ([prov, userAddress, destination]) => {
-                this.checkApproved(prov, userAddress, destination)
-              }
-            )
-          }
-        )
-        this.subscriptions.push(sub)
-      }
+    }
+    if (connection) {
+      const sub = zip(connection.provider, connection.account).subscribe(
+        async ([provider, account]) => {
+          this.provider = provider
+          this.account = account
+          await whenDefinedAll(
+            [provider, account, this.destination],
+            async ([prov, userAddress, destination]) => {
+              this.checkApproved(prov, userAddress, destination)
+            }
+          )
+        }
+      )
+      this.subscriptions.push(sub)
     }
   },
   destroyed() {
@@ -119,27 +126,21 @@ export default defineComponent({
   },
   methods: {
     async approve() {
-      const connection = getConnection(connectionId)
-      if (connection) {
-        const sub = zip(connection.provider).subscribe(async ([provider]) => {
-          await whenDefinedAll(
-            [provider, this.destination],
-            async ([prov, destination]) => {
-              const [l1, _] = await clientsDev(prov)
-              const res = await l1?.approve(
-                destination,
-                constants.MaxUint256.toString()
-              )
-              if (res) {
-                await res?.wait()
-                console.log('approve res is: ', res)
-                this.approveNeeded = false
-              }
-            }
+      await whenDefinedAll(
+        [this.provider, this.destination],
+        async ([prov, destination]) => {
+          const [l1, _] = await clientsDev(prov)
+          const res = await l1?.approve(
+            destination,
+            constants.MaxUint256.toString()
           )
-        })
-        this.subscriptions.push(sub)
-      }
+          if (res) {
+            await res?.wait()
+            console.log('approve res is: ', res)
+            this.approveNeeded = false
+          }
+        }
+      )
     },
     async checkApproved(
       provider: providers.Provider,
@@ -150,70 +151,56 @@ export default defineComponent({
       const allowance = BigNumber.from(
         (await l1?.allowance(userAddress, destination)) ?? 0
       )
-      this.approved = allowance?.gt(this.amount ?? 0) ?? false
+      this.approved = allowance?.gt(this.parsedAmount ?? 0) ?? false
     },
     async submitStake() {
-      const connection = getConnection(connectionId)
-      if (connection) {
-        const sub = zip(connection.provider, connection.account).subscribe(
-          async ([provider, account]) => {
-            await whenDefinedAll(
-              [provider, account, this.destination],
-              async ([prov, userAddress, destination]) => {
-                if (this.currency === CurrencyOption.ETH) {
-                  // handle ETH stake
-                  const res = await whenDefinedAll(
-                    [provider, account, this.amount, this.destination],
-                    ([prov, from, amount, destination]) =>
-                      positionsCreateWithEth({
-                        provider: prov,
+      await whenDefinedAll(
+        [
+          this.provider,
+          this.account,
+          this.destination,
+          this.parsedAmount?.toString(),
+        ],
+        async ([prov, account, destination, parsedAmount]) => {
+          if (this.currency === CurrencyOption.ETH) {
+            // handle ETH stake
+            const res = await positionsCreateWithEth({
+              provider: prov,
 
-                        destination,
-                        ethAmount: utils
-                          .parseUnits(amount.toString(), 18)
-                          .toString(),
-                      })
-                  )
+              destination,
+              devAmount: parsedAmount,
+            })
 
-                  if (res) {
-                    res
-                      .create()
-                      .then((res) => res.wait())
-                      .then((res) => {
-                        console.log('res is: ', res)
-                        this.stakeSuccessful = true
-                      })
-                  }
-                } else {
-                  // handle DEV stake
-                  const res = await whenDefinedAll(
-                    [provider, account, this.amount, this.destination],
-                    ([prov, from, amount, destination]) =>
-                      positionsCreate({
-                        provider: prov,
-                        from,
-                        destination,
-                        amount: utils
-                          .parseUnits(amount.toString(), 18)
-                          .toString(),
-                      })
-                  )
-                  if (res) {
-                    res
-                      .approveIfNeeded()
-                      .then((res) => res.waitOrSkip())
-                      .then((res) => {
-                        console.log('res is: ', res)
-                        this.stakeSuccessful = true
-                      })
-                  }
-                }
-              }
-            )
+            if (res) {
+              res
+                .create()
+                .then((res) => res.wait())
+                .then((res) => {
+                  console.log('res is: ', res)
+                  this.stakeSuccessful = true
+                })
+            }
+          } else {
+            // handle DEV stake
+            const res = await positionsCreate({
+              provider: prov,
+              from: account,
+              destination,
+              amount: parsedAmount,
+            })
+
+            if (res) {
+              res
+                .approveIfNeeded()
+                .then((res) => res.waitOrSkip())
+                .then((res) => {
+                  console.log('res is: ', res)
+                  this.stakeSuccessful = true
+                })
+            }
           }
-        )
-        this.subscriptions.push(sub)
-      }
+        }
+      )
     },
   },
 })
