@@ -100,12 +100,12 @@ export default defineComponent({
     const input = new FormData(this.$refs.form as HTMLFormElement).get(
       'input'
     ) as null | Data['currency']
-    this.currency = input as ('dev' | 'eth')
+    this.currency = input as 'dev' | 'eth'
   },
   methods: {
     async switchInputs(ev: Event) {
       const { value } = ev.target as HTMLInputElement
-      this.currency = value as ('dev' | 'eth')
+      this.currency = value as 'dev' | 'eth'
     },
   },
   components: {

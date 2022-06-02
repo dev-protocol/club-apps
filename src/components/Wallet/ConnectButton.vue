@@ -18,11 +18,11 @@ import Core from 'web3modal'
 import { defineComponent } from '@vue/runtime-core'
 
 type Data = {
-  modalProvider: Core,
+  modalProvider: Core
   truncateWalletAddress: String
 }
 
-export default defineComponent ({
+export default defineComponent({
   name: 'ConnectButton',
   data(): Data {
     const modalProvider = GetModalProvider()
