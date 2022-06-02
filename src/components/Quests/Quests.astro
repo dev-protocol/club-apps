@@ -1,13 +1,15 @@
 ---
 import QuestCard from './QuestCard/QuestCard.vue'
-import quests from "./quests.json"
+import quests from './quests.json'
+
+const filteredQuests = quests.filter((quest) => quest.listed)
 ---
 
-<section class="bg-cover bg-center mx-4">
-  <h2 class="text-3xl">Quests</h2>
+<section class='bg-cover bg-center mx-4'>
+  <h2 class='text-3xl'>Quests</h2>
   <p>Complete quests and collect additional badges.</p>
   <div
-    class="
+    class='
       grid
       gap-8
       md:grid-cols-2
@@ -18,23 +20,25 @@ import quests from "./quests.json"
       p-4
       text-black
       dark:text-white
-    "
+    '
   >
-    {quests.length > 0 ? quests.filter((quest) => quest.listed).map((quest) => {
-      return (
-        <div class="h-full grid justify-items-start">
-          <a href=`/quests/${quest.id}`>
+    {filteredQuests.length > 0 ? (
+      filteredQuests.map((quest) => (
+        <div class="grid h-full justify-items-start">
+          <a href={`/quests/${quest.id}`}>
             <div class="max-w-xl">
               <QuestCard
                 title={quest.title}
-                id={quest.id}
+                questId={quest.id}
                 description={quest.description}
                 badgeImageSrc={quest.badgeImageSrc}
               />
             </div>
           </a>
         </div>
-      )
-    }) : <div>no quest data</div>}
+      ))
+    ) : (
+      <div>no quests data</div>
+    )}
   </div>
 </section>
