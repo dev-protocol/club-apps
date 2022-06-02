@@ -1,10 +1,13 @@
 <template>
   <div class="rounded border px-4 py-2">
     <div v-if="truncateWalletAddress && formattedUserBalance.length > 0">
-      <a href="/me">
-        <span class="mr-4">{{ formattedUserBalance }} DEV</span>
-        <span>{{ truncateWalletAddress }}</span>
-      </a>
+      <div v-if="supportedNetwork">
+        <a href="/me">
+          <span class="mr-4">{{ formattedUserBalance }} DEV</span>
+          <span>{{ truncateWalletAddress }}</span>
+        </a>
+      </div>
+      <div v-else>Unsupported Network</div>
     </div>
     <div v-else v-on:click="connect">Connect Wallet</div>
   </div>
@@ -26,6 +29,7 @@ export default defineComponent({
       modalProvider,
       truncateWalletAddress: '',
       formattedUserBalance: '',
+      supportedNetwork: false,
     }
   },
   async mounted() {
@@ -60,6 +64,7 @@ export default defineComponent({
       provider: providers.Provider
     ) {
       const [l1, l2] = await clientsDev(provider)
+      this.supportedNetwork = l1 || l2 ? true : false
       const balance = await (l1 || l2)?.balanceOf(currentAddress)
       const formatted = utils.formatUnits(balance ?? 0)
       const rounded = Math.round((+formatted + Number.EPSILON) * 100) / 100
