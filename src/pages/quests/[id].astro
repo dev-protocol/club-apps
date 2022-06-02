@@ -13,7 +13,9 @@ export function getStaticPaths() {
   ]
 }
 const { id } = Astro.params
-const targetQuest = quests.filter((quest) => quest && quest.id === id && quest.listed)[0]
+const targetQuest = quests.filter(
+  (quest) => quest && quest.id === id && quest.listed
+)[0]
 ---
 
 <Layout metaTitle='D Club | Quest'>
