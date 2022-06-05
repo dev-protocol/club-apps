@@ -12,6 +12,7 @@
           id="dev"
           name="input"
           value="dev"
+          checked
           @change="switchInputs"
         />
         <span class="w-16">$DEV</span>
