@@ -1,6 +1,6 @@
 const {
   theme: { colors, fontFamily },
-} = require('@devprotocol/hashi/gradual')
+} = require('@devprotocol/hashi/tailwind')
 
 module.exports = {
   mode: 'jit',
@@ -14,7 +14,7 @@ module.exports = {
       colors,
       fontFamily: Object.assign(
         {
-          'c-serif': ['Bodoni Moda', 'serif'],
+          serif: ['Bodoni Moda', 'serif'],
         },
         fontFamily
       ),

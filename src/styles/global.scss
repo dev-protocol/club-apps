@@ -1,4 +1,22 @@
+@use 'clubs.theme' as clubs;
+@use 'node_modules/@devprotocol/hashi' with (
+  $theme: clubs.$theme
+);
+@use 'node_modules/@devprotocol/hashi/hs-button' with (
+  $theme: clubs.$button-theme
+);
+@use 'node_modules/@devprotocol/hashi/hs-wallet' with (
+  $theme: clubs.$wallet-theme
+);
+
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz@6..96&family=DM+Sans:wght@400;700&family=Syne:wght@500;700;800&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+@include hashi.init() {
+  body {
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255 255 255 / 50%) rgba(0 0 0 / 30%) !important;
+  }
+  @include hs-button.render();
+  @include hs-wallet.render();
+  @tailwind utilities;
+}
