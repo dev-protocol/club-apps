@@ -63,8 +63,8 @@
     <section>
       <a
         href="/perks"
-        class="block rounded border border-native-blue-400 p-4 text-xl"
-        >Perks →</a
+        class="block rounded border border-native-blue-400 p-4 text-xl transition-all duration-[var(--hs-transition-time)] ease-in-out hover:bg-native-blue-400"
+        >See the perks →</a
       >
     </section>
   </section>
