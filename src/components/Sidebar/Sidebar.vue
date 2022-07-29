@@ -78,7 +78,7 @@
             <h3 class="p-2 opacity-50">APY for $DEV</h3>
             <p class="p-2 opacity-50">&*%</p>
           </aside>
-          <HSButton type="filled" link="/join">Join</HSButton>
+          <HSButton type="filled fullwidth" link="/join">Join</HSButton>
           <div class="grid w-full gap-3">
             <HSButton link="/perks">Perks</HSButton>
             <HSButton type="disabled" link="#">Quests</HSButton>
