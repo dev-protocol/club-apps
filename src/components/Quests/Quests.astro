@@ -6,8 +6,8 @@ const filteredQuests = quests.filter((quest) => quest.listed)
 ---
 
 <section class='bg-cover bg-center mx-4'>
-  <h2 class='text-3xl'>Quests</h2>
-  <p>Complete quests and collect additional badges.</p>
+  <h2 class='family-title text-xl font-bold'>Quests</h2>
+  <p class='body'>Complete quests and collect additional badges.</p>
   <div
     class='
       grid
@@ -38,7 +38,9 @@ const filteredQuests = quests.filter((quest) => quest.listed)
         </div>
       ))
     ) : (
-      <div>no quests data</div>
+      <div className="hs-card">
+        <div className="hs-card__content">No quest data.</div>
+      </div>
     )}
   </div>
 </section>

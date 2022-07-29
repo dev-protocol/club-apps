@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="fixed top-14 lg:sticky lg:top-12">
+    <div class="fixed top-14 z-50 lg:sticky lg:top-12">
       <button
         class="rounded-r-full bg-white text-black lg:hidden"
         @click="toggle"
@@ -23,7 +23,7 @@
       <nav
         :aria-disabled="toggleOpen"
         :style="{ transform: toggleOpen ? 'translateX(0)' : '' }"
-        class="fixed inset-0 max-h-screen translate-x-[-100vw] overflow-y-hidden scroll-smooth rounded border-stone-50/30 bg-zinc-900 transition-transform duration-100 hover:overflow-auto md:max-h-[calc(100vh-6rem)] lg:relative lg:inset-auto lg:mx-auto lg:max-w-none lg:translate-x-0 lg:border lg:bg-slate-50/[.06] lg:backdrop-blur-3xl"
+        class="dpc-sidebar lg:backdrop-blur-3x fixed inset-0 max-h-screen translate-x-[-100vw] overflow-y-scroll scroll-smooth rounded border-stone-50/30 bg-zinc-900 transition-transform duration-100 md:max-h-[calc(100vh-6rem)] lg:relative lg:inset-auto lg:mx-auto lg:max-w-none lg:translate-x-0 lg:border lg:bg-[rgba(0,0,0,0.5)]"
       >
         <button
           class="mt-4 rounded-r-full bg-white text-black lg:hidden"
@@ -66,24 +66,24 @@
           <div
             class="grid grid-cols-[1fr_2fr] items-center gap-8 lg:grid-cols-1"
           >
-            <a href="/members">{{ members || '-' }} members</a>
+            <a href="/members">{{ members || 'NaN' }} members</a>
           </div>
           <aside
-            class="grid w-full grid-cols-[1fr_auto] justify-between rounded border border-stone-50/30 font-body text-sm"
+            class="border-accent-800 grid w-full grid-cols-[1fr_auto] justify-between rounded border font-body text-sm"
           >
-            <h3 class="border-b border-stone-50/30 p-2 opacity-20">
+            <h3 class="border-accent-800 border-b p-2 opacity-50">
               Club Allocation
             </h3>
-            <p class="border-b border-stone-50/30 p-2 opacity-20">TBD</p>
-            <h3 class="p-2 opacity-20">APY for $DEV</h3>
-            <p class="p-2 opacity-20">&*%</p>
+            <p class="border-accent-800 border-b p-2 opacity-50">TBD</p>
+            <h3 class="p-2 opacity-50">APY for $DEV</h3>
+            <p class="p-2 opacity-50">&*%</p>
           </aside>
-          <a class="rounded border p-2 px-4" href="/join">Join</a>
-          <div class="grid w-full gap-6">
-            <a href="/perks">Perks</a>
-            <a class="opacity-20">Quests</a>
-            <a class="opacity-20">Updates</a>
-            <a class="opacity-20">Vote</a>
+          <HSButton type="filled fullwidth" link="/join">Join</HSButton>
+          <div class="grid w-full gap-3">
+            <HSButton link="/perks">Perks</HSButton>
+            <HSButton type="disabled" link="#">Quests</HSButton>
+            <HSButton type="disabled" link="#">Updates</HSButton>
+            <HSButton type="disabled" link="#">Vote</HSButton>
           </div>
         </section>
       </nav>
@@ -94,9 +94,11 @@
 <script>
 import { providers } from 'ethers'
 import { detectStokensByPropertyAddress } from '../../fixtures/dev-kit'
+import HSButton from '../Hashi/HSButton.vue'
 
 export default {
   name: 'Sidebar',
+  components: { HSButton },
   data() {
     return {
       members: 0,
@@ -121,3 +123,18 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.dpc-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255 255 255 / 50%) rgba(0 0 0 / 30%);
+
+  &::-webkit-scrollbar {
+    width: 7px;
+    background-color: rgba(0 0 0 / 30%);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255 255 255 / 50%);
+  }
+}
+</style>
