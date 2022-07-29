@@ -398,10 +398,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@devprotocol/dev-kit@6.8.4":
-  version "6.8.4"
-  resolved "https://registry.yarnpkg.com/@devprotocol/dev-kit/-/dev-kit-6.8.4.tgz#61f56bb0bba8815ccaa0328068a023d3359238fb"
-  integrity sha512-i28fF9JlAlNflUnPMXiB/MjUNKV0X5dOLYWswaBvl/iGkbAR30h+E1uIHmCWI7D2TD55jtDWOX9cEKeQZrysww==
+"@devprotocol/dev-kit@6.8.5":
+  version "6.8.5"
+  resolved "https://registry.yarnpkg.com/@devprotocol/dev-kit/-/dev-kit-6.8.5.tgz#a259050e198ffa27f4bef102b52f95ca16726630"
+  integrity sha512-f+9bkFsequLnqFHlIaNovHMQoxCEDwpJZ66d1XSBQKBHYQkNAMHMFc+Z0P2U+rGoKmcspNWmSDaeoK6u9rHbUw==
   dependencies:
     "@devprotocol/util-ts" "^2.2.1"
     "@types/bent" "^7.3.1"
