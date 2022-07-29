@@ -28,9 +28,14 @@ import { Comment } from 'vue'
 export default {
   name: 'HSButton',
   props: {
-    icon: String,
-    link: String,
-    isDisabled: Boolean,
+    link: {
+      type: String,
+      default: null,
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
     type: {
       type: String,
       default: '',
@@ -62,9 +67,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .hs-button {
+  --hs-button-width: auto;
   flex-flow: row nowrap;
-  /*--hs-button-max-width: none !important;*/
 }
 </style>
